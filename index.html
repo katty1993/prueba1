@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="hcApp">
+<head>
+    <title>Historial clinico</title>
+    <meta charset="utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="msapplication-tap-highlight" content="no"/>
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi"/>
+
+    <!--Import Google Icon Font-->
+    <link href="fonts/material-icons/material-icons.css" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
+    <!--Import Font Awesome-->
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+
+
+<div ng-view></div>
+
+</body>
+<!-- Scripts -->
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript">
+    // App
+    var htc = angular.module('hcApp', ['ngRoute']);
+
+    gPacientes = [
+        {id: 1, nombre: "Jose Ramon", edad: 25, sexo: "Hombre", favorito: true},
+        {id: 2, nombre: "Navarro Marquez", edad: 26, sexo: "Mujer", favorito: false}
+    ];
+
+    function getPaciente(id){
+        if(id == 0)
+        return null;
+        else
+        return gPacientes[id -1];
+    }
+
+    var app = {
+        // Application Constructor
+        initialize: function () {
+            console.log("initializing");
+            this.bindEvents();
+            console.log("initializing done");
+        },
+        onLoad: function () {
+        },
+        bindEvents: function () {
+            document.addEventListener('load', this.onLoad, false);
+            document.addEventListener('deviceready', this.onDeviceReady, false);
+            document.addEventListener('online', this.onOnline, false);
+            document.addEventListener('offline', this.onOffline, false);
+        },
+        onDeviceReady: function () {
+        },
+        onOffline: function () {
+        }
+    };
+    // Ruoter
+    htc.config(['$routeProvider',
+        function($routeProvider) {
+            $routeProvider.
+            when('/pacientes', {
+                templateUrl: 'partials/pacientes.html',
+                controller: 'pacientesController'
+            }).
+            when('/pacientes/:pacienteId', {
+                templateUrl: 'partials/pacienteDetalle.html',
+                controller: 'pacienteDetalleController'
+            }).
+            otherwise({
+                redirectTo: '/pacientes'
+            });
+        }]);
+    // Controllers
+    htc.controller('pacientesController', function ($scope) {
+        $scope.pacientes = gPacientes;
+
+        /*for (var i = 0; i < 10; i++) {
+         $scope.pacientes.push({nombre: "A", edad: i});
+         }*/
+    });
+    htc.controller('pacienteDetalleController',['$scope', '$routeParams',
+        function($scope, $routeParams) {
+            $scope.paciente = getPaciente($routeParams.pacienteId);
+        }]
+    );
+    // Punto de inicio
+    app.initialize();
+</script>
+</html>

@@ -1,2 +1,2 @@
-# prueba1
-katty
+# Historial-Clinico
+Control de pacientes para dispositivos moviles
